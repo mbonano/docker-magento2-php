@@ -1,14 +1,19 @@
 #!/bin/bash
 WWW_DIR=/srv/www
 
-if [ -d $WWW_DIR/bin ] && [ ! -f $WWW_DIR/bin/magento-php ]; then
-  mv $WWW_DIR/bin/magento $WWW_DIR/bin/magento-php
-  cp /usr/local/bin/magento $WWW_DIR/bin/
+if [ -d "$WWW_DIR/bin" ] && [ ! -f "$WWW_DIR/bin/magento-php" ]; then
+	echo "Configuring Magento 2 binaries..."
+	mv $WWW_DIR/bin/magento $WWW_DIR/bin/magento-php
+	cp /usr/local/bin/magento $WWW_DIR/bin/
+else
+	echo "Skipping binary configuration ('$WWW_DIR/bin/magento-php' already exists)..."
 fi
 
-echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/update/cron.php" | crontab - \
-  && (crontab -l ; echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/bin/magento-php cron:run") | crontab - \
-  && (crontab -l ; echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/bin/magento-php setup:cron:run") | crontab -
+# echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/update/cron.php" | crontab - \
+#   && (crontab -l ; echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/bin/magento-php cron:run") | crontab - \
+#   && (crontab -l ; echo "*/1 * * * * /usr/local/bin/php $WWW_DIR/bin/magento-php setup:cron:run") | crontab -
 
-# Start the cron service
-/usr/sbin/cron
+echo "Configuring cron jobs..."
+echo "* * * * * /usr/local/bin/php -c /usr/local/etc/php/php.ini $WWW_DIR/bin/magento-php cron:run | grep -v 'Ran jobs by schedule' >> $WWW_DIR/var/log/magento.cron.log" | crontab  -u www-data - \
+  && (crontab -u www-data -l ; echo "* * * * * /usr/local/bin/php -c /usr/local/etc/php/php.ini $WWW_DIR/update/cron.php >> $WWW_DIR/var/log/update.cron.log") | crontab -u www-data - \
+  && (crontab -u www-data -l ; echo "* * * * * /usr/local/bin/php -c /usr/local/etc/php/php.ini $WWW_DIR/bin/magento-php setup:cron:run >> $WWW_DIR/var/log/setup.cron.log") | crontab -u www-data -

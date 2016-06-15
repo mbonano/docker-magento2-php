@@ -1,4 +1,18 @@
 #!/bin/sh
+WWW_DIR=/srv/www
+
+# wait for db to become available 
+while ! nc -q 1 $M2SETUP_DB_HOST $M2SETUP_DB_PORT </dev/null; do sleep 3; done
+
+# guard against multiple installation runs
+if [ -e "$WWW_DIR/installation_complete" ]; then
+  echo "Magento is already installed ('$WWW_DIR/installation_complete' exist). Exiting setup..."
+  exit
+fi
+
 chown -R www-data:www-data /srv/www
 su -c "/usr/local/bin/mage-setup-raw" -s /bin/sh www-data
 chown -R www-data:www-data /srv/www
+
+# flag installation as complete
+touch "$WWW_DIR/installation_complete"

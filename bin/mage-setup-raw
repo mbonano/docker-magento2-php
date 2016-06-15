@@ -3,11 +3,6 @@ echo "Initializing setup..."
 
 cd /srv/www
 
-if [ -f ./app/etc/config.php ] || [ -f ./app/etc/env.php ]; then
-  echo "It appears Magento is already installed (app/etc/config.php or app/etc/env.php exist). Exiting setup..."
-  exit
-fi
-
 if [ "$M2SETUP_USE_ARCHIVE" = true ]; then
   echo "Downloading and untarring archive..."
   if [ "$M2SETUP_USE_SAMPLE_DATA" = true ]; then
@@ -50,4 +45,4 @@ echo "Running Magento 2 setup script..."
   --backend-frontname=$M2SETUP_BACKEND_FRONTNAME \
   $M2SETUP_USE_SAMPLE_DATA_STRING
 
-echo "The setup script has completed execution."
+echo "The setup script has completed execution." 
