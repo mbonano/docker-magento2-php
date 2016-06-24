@@ -10,9 +10,10 @@ if [ -e "$WWW_DIR/installation_complete" ]; then
   exit
 fi
 
-chown -R www-data:www-data /srv/www
-su -c "/usr/local/bin/mage-setup-raw" -s /bin/sh www-data
-chown -R www-data:www-data /srv/www
+chown -R $M2SETUP_OS_USER:$M2SETUP_OS_GROUP /srv/www
+su -c "/usr/local/bin/mage-setup-raw" -s /bin/sh $M2SETUP_OS_USER
+chown -R $M2SETUP_OS_USER:$M2SETUP_OS_GROUP /srv/www
 
 # flag installation as complete
 touch "$WWW_DIR/installation_complete"
+chown -R $M2SETUP_OS_USER:$M2SETUP_OS_GROUP "$WWW_DIR/installation_complete"
