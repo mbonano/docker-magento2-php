@@ -1,2 +1,2 @@
 #!/bin/bash
-su -c "/usr/local/bin/php /srv/www/bin/magento-php $*" -s /bin/sh $M2SETUP_OS_USER:$M2SETUP_OS_GROUP
+su -c "/usr/local/bin/php /srv/www/bin/magento-php $*" -s /bin/sh $M2SETUP_OS_USER

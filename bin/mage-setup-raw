@@ -45,4 +45,10 @@ echo "Running Magento 2 setup script..."
   --backend-frontname=$M2SETUP_BACKEND_FRONTNAME \
   $M2SETUP_USE_SAMPLE_DATA_STRING
 
+echo "ReIndexing Magento Indexers..."
+/usr/local/bin/php -d memory_limit=2G ./bin/magento indexer:reindex
+
+echo "Flushing the cache..."
+/usr/local/bin/php -d memory_limit=2G ./bin/magento cache:flush
+
 echo "The setup script has completed execution." 
